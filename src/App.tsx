@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { CyberpunkLayout } from './components/game/CyberpunkLayout';
 import { Header } from './components/game/Header';
 import { Intro } from './components/game/Intro';
@@ -18,7 +18,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { useClickSound } from './hooks/useClickSound';
 
-type GameState = 'INTRO' | 'HUB' | 'PUZZLE' | 'VIEWER';
+import { NameEntry } from './components/game/NameEntry';
+import { PasswordEntry } from './components/game/PasswordEntry';
+
+type GameState = 'INTRO' | 'NAME_INPUT' | 'PASSWORD_INPUT' | 'HUB' | 'PUZZLE' | 'VIEWER';
 
 // Puzzle Metadata for Tutorials
 const PUZZLE_INFO: Record<NodeType, { title: string; description: string; difficulty: 'EASY' | 'MEDIUM' | 'HARD' }> = {
@@ -73,19 +76,30 @@ export default function App() {
   const [endTime, setEndTime] = useState<number>(0);
   const [showAnalysis, setShowAnalysis] = useState(false);
 
-  const triggerTransition = (nextState: GameState, type: NodeType | 'DEFAULT' | 'HUB' = 'DEFAULT') => {
+  const [userName, setUserName] = useState('');
+
+  const triggerTransition = useCallback((nextState: GameState, type: NodeType | 'DEFAULT' | 'HUB' = 'DEFAULT') => {
     setTransitionType(type);
     setShowTransition(true);
     setTimeout(() => {
       setGameState(nextState);
       setShowTransition(false);
     }, 600); // Wait for transition animation
-  };
+  }, []);
 
-  const handleIntroComplete = () => {
+  const handleIntroComplete = useCallback(() => {
+    triggerTransition('NAME_INPUT');
+  }, [triggerTransition]);
+
+  const handleNameSubmit = useCallback((name: string) => {
+    setUserName(name);
+    triggerTransition('PASSWORD_INPUT');
+  }, [triggerTransition]);
+
+  const handlePasswordSuccess = useCallback(() => {
     setStartTime(Date.now());
     triggerTransition('HUB', 'HUB');
-  };
+  }, [triggerTransition]);
 
   const handleNodeClick = (nodeId: NodeType) => {
     if (nodeId === 'IDENTITY') {
@@ -189,6 +203,8 @@ export default function App() {
 
       <AnimatePresence>
         {gameState === 'INTRO' && <Intro onComplete={handleIntroComplete} />}
+        {gameState === 'NAME_INPUT' && <NameEntry onComplete={handleNameSubmit} />}
+        {gameState === 'PASSWORD_INPUT' && <PasswordEntry onComplete={handlePasswordSuccess} userName={userName} />}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -212,7 +228,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <Header />
+      <Header userName={userName} />
 
       <main className="flex h-screen w-full flex-col pt-20">
         <AnimatePresence mode="wait">

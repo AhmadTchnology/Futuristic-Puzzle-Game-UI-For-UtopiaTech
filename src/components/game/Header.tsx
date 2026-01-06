@@ -1,9 +1,13 @@
 import React from 'react';
 import { Activity } from 'lucide-react';
 import { BackgroundMusic } from './BackgroundMusic';
-import exampleImage from 'figma:asset/0298e19d3ed89925d39517ac594ea1b7d707bbbf.png';
+import exampleImage from '../../assets/utech-logo.png';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  userName?: string;
+}
+
+export const Header: React.FC<HeaderProps> = ({ userName }) => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-white/5 bg-[#0A0A0F]/80 p-6 backdrop-blur-md">
       <div className="flex items-center gap-6">
@@ -32,6 +36,16 @@ export const Header: React.FC = () => {
       {/* Decorative Top Elements */}
       <div className="flex items-center gap-4 text-white/20">
         <BackgroundMusic />
+        <div className="h-8 w-px bg-white/10 mx-2" /> {/* Separator */}
+        {userName && (
+          <>
+            <div className="hidden md:flex items-center gap-2 text-[#00E6FF] font-mono text-xs tracking-widest">
+              <span className="opacity-50">OPERATOR:</span>
+              <span className="font-bold">{userName.toUpperCase()}</span>
+            </div>
+            <div className="h-8 w-px bg-white/10 mx-2" />
+          </>
+        )}
         <div className="h-8 w-px bg-white/10 mx-2" /> {/* Separator */}
         <Activity size={16} />
         <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
