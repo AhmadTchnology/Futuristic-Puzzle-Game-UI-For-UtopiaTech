@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
-import { Grid, Lock, Unlock } from 'lucide-react';
+import { Grid } from 'lucide-react';
 
 interface MemoryPuzzleProps {
   onComplete: () => void;
@@ -26,7 +26,7 @@ export const MemoryPuzzle: React.FC<MemoryPuzzleProps> = ({ onComplete }) => {
     setUserSequence([]);
     const newSeq = Array.from({ length: r + 2 }, () => Math.floor(Math.random() * 9));
     setSequence(newSeq);
-    
+
     // Playback
     let i = 0;
     const interval = setInterval(() => {
@@ -62,14 +62,14 @@ export const MemoryPuzzle: React.FC<MemoryPuzzleProps> = ({ onComplete }) => {
 
   const handleTileClick = (id: number) => {
     if (playing || failed) return;
-    
+
     highlightTile(id);
     const nextIndex = userSequence.length;
-    
+
     if (sequence[nextIndex] === id) {
       const newUserSeq = [...userSequence, id];
       setUserSequence(newUserSeq);
-      
+
       if (newUserSeq.length === sequence.length) {
         if (round >= 3) {
           setTimeout(onComplete, 1000);
@@ -89,31 +89,31 @@ export const MemoryPuzzle: React.FC<MemoryPuzzleProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-[#050508]/90 w-full h-full max-w-md mx-auto">
-      <div className="mb-8 text-center">
-         <h2 className="text-xl font-bold tracking-widest text-[#00E6FF] flex items-center justify-center gap-2">
-           <Grid size={20} />
-           PATTERN_AUTH
-         </h2>
-         <p className="text-xs text-white/50">MEMORIZE AND REPLICATE THE SIGNAL PATTERN</p>
-         <div className="mt-2 text-xs font-mono text-[#00E6FF]">ROUND {round}/3</div>
+    <div className="flex flex-col items-center justify-center p-4 sm:p-8 bg-[#050508]/90 w-full h-full max-w-md mx-auto">
+      <div className="mb-4 sm:mb-8 text-center">
+        <h2 className="text-lg sm:text-xl font-bold tracking-widest text-[#00E6FF] flex items-center justify-center gap-2">
+          <Grid size={20} />
+          PATTERN_AUTH
+        </h2>
+        <p className="text-[10px] sm:text-xs text-white/50">MEMORIZE AND REPLICATE THE SIGNAL PATTERN</p>
+        <div className="mt-2 text-xs font-mono text-[#00E6FF]">ROUND {round}/3</div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
         {grid.map(id => (
           <motion.button
             key={id}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleTileClick(id)}
             className={cn(
-              "h-20 w-20 rounded border-2 transition-all duration-200",
-              activeTile === id ? "bg-[#00E6FF] border-white shadow-[0_0_30px_#00E6FF]" : 
-              failed ? "border-red-500/50 bg-red-500/10" : "border-white/10 bg-white/5 hover:border-white/30"
+              "h-16 w-16 sm:h-20 sm:w-20 rounded border-2 transition-all duration-200",
+              activeTile === id ? "bg-[#00E6FF] border-white shadow-[0_0_30px_#00E6FF]" :
+                failed ? "border-red-500/50 bg-red-500/10" : "border-white/10 bg-white/5 hover:border-white/30"
             )}
           />
         ))}
       </div>
-      
+
       {failed && (
         <div className="mt-4 text-center">
           <div className="text-red-500 font-bold tracking-widest animate-pulse">AUTH FAILED</div>

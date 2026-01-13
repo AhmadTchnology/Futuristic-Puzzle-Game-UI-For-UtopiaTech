@@ -172,13 +172,13 @@ export const HexPuzzle: React.FC<PuzzleProps> = ({ onComplete }) => {
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-[#050508]/80">
 
       {/* HUD Info */}
-      <div className="absolute top-4 right-4 text-right font-mono text-xs text-[#00E6FF]/70 z-50 pointer-events-none">
-        <div className="text-xl font-bold">{isReadyToUnlock ? "LINK ESTABLISHED" : "NO CARRIER"}</div>
+      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 text-right font-mono text-[10px] sm:text-xs text-[#00E6FF]/70 z-50 pointer-events-none">
+        <div className="text-lg sm:text-xl font-bold">{isReadyToUnlock ? "LINK ESTABLISHED" : "NO CARRIER"}</div>
         <div>NODES: {grid.length}</div>
         <div>HOP_COUNT: {moves}</div>
       </div>
 
-      <div className="relative h-[600px] w-full max-w-[800px] scale-[0.55] sm:scale-75 md:scale-100 touch-none transition-transform duration-300">
+      <div className="relative h-[500px] sm:h-[600px] w-full max-w-[800px] scale-[0.45] xs:scale-[0.55] sm:scale-75 md:scale-100 touch-none transition-transform duration-300">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {grid.map((tile) => {
             const { x, y } = getHexCoords(tile.q, tile.r);

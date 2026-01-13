@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
 import { ToggleLeft, ToggleRight, ArrowDown, Zap, Play } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -87,7 +86,7 @@ export const LogicPuzzle: React.FC<LogicPuzzleProps> = ({ onComplete }) => {
          <div className="flex flex-col items-center gap-4 w-full">
 
             {/* Layer 1: Inputs */}
-            <div className="flex justify-between w-full px-4 md:px-8">
+            <div className="flex justify-between w-full px-2 sm:px-8">
                {inputs.map((val, i) => (
                   <button
                      key={i}
@@ -97,47 +96,47 @@ export const LogicPuzzle: React.FC<LogicPuzzleProps> = ({ onComplete }) => {
                         val ? "text-[#00E6FF]" : "text-white/30"
                      )}
                   >
-                     <div className={cn("h-4 w-4 rounded-full shadow-[0_0_10px_currentColor]", val ? "bg-[#00E6FF]" : "bg-white/10")} />
-                     {val ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
-                     <span className="font-mono text-xs">SW_{i + 1}</span>
+                     <div className={cn("h-3 w-3 sm:h-4 sm:w-4 rounded-full shadow-[0_0_10px_currentColor]", val ? "bg-[#00E6FF]" : "bg-white/10")} />
+                     {val ? <ToggleRight size={24} className="sm:w-8 sm:h-8" /> : <ToggleLeft size={24} className="sm:w-8 sm:h-8" />}
+                     <span className="font-mono text-[10px] sm:text-xs">SW_{i + 1}</span>
                   </button>
                ))}
             </div>
 
             <div className="w-full flex justify-around text-white/20">
-               <ArrowDown /> <ArrowDown /> <ArrowDown /> <ArrowDown />
+               <ArrowDown size={16} className="sm:w-6 sm:h-6" /> <ArrowDown size={16} className="sm:w-6 sm:h-6" /> <ArrowDown size={16} className="sm:w-6 sm:h-6" /> <ArrowDown size={16} className="sm:w-6 sm:h-6" />
             </div>
 
             {/* Layer 2: G1 & G2 */}
-            <div className="flex justify-around w-full px-4 md:px-12">
-               <div className={cn("flex flex-col items-center rounded border p-2 min-w-[80px] transition-colors duration-300", r1 ? "border-[#00E6FF] bg-[#00E6FF]/10 text-[#00E6FF]" : "border-white/10 bg-black/50 text-white/50")}>
-                  <span className="text-lg font-bold">{gates[0]}</span>
+            <div className="flex justify-around w-full px-2 sm:px-12 gap-4">
+               <div className={cn("flex flex-col items-center rounded border p-1 sm:p-2 min-w-[60px] sm:min-w-[80px] transition-colors duration-300", r1 ? "border-[#00E6FF] bg-[#00E6FF]/10 text-[#00E6FF]" : "border-white/10 bg-black/50 text-white/50")}>
+                  <span className="text-sm sm:text-lg font-bold">{gates[0]}</span>
                </div>
 
-               <div className={cn("flex flex-col items-center rounded border p-2 min-w-[80px] transition-colors duration-300", r2 ? "border-[#00E6FF] bg-[#00E6FF]/10 text-[#00E6FF]" : "border-white/10 bg-black/50 text-white/50")}>
-                  <span className="text-lg font-bold">{gates[1]}</span>
+               <div className={cn("flex flex-col items-center rounded border p-1 sm:p-2 min-w-[60px] sm:min-w-[80px] transition-colors duration-300", r2 ? "border-[#00E6FF] bg-[#00E6FF]/10 text-[#00E6FF]" : "border-white/10 bg-black/50 text-white/50")}>
+                  <span className="text-sm sm:text-lg font-bold">{gates[1]}</span>
                </div>
             </div>
 
-            <div className="w-full flex justify-center gap-24 text-white/20">
-               <ArrowDown className="-rotate-45" /> <ArrowDown className="rotate-45" />
+            <div className="w-full flex justify-center gap-12 sm:gap-24 text-white/20">
+               <ArrowDown className="-rotate-45 w-4 h-4 sm:w-6 sm:h-6" /> <ArrowDown className="rotate-45 w-4 h-4 sm:w-6 sm:h-6" />
             </div>
 
             {/* Layer 3: G3 (Final) */}
             <div className="flex justify-center w-full">
-               <div className={cn("flex flex-col items-center rounded-xl border-2 p-4 min-w-[100px] transition-all duration-300", final ? "border-[#00E6FF] text-[#00E6FF]" : "border-white/10 text-white/50")}>
-                  <span className="text-2xl font-black">{gates[2]}</span>
+               <div className={cn("flex flex-col items-center rounded-xl border-2 p-2 sm:p-4 min-w-[80px] sm:min-w-[100px] transition-all duration-300", final ? "border-[#00E6FF] text-[#00E6FF]" : "border-white/10 text-white/50")}>
+                  <span className="text-xl sm:text-2xl font-black">{gates[2]}</span>
                </div>
             </div>
 
-            <div className="h-8 w-[2px] bg-white/10" />
+            <div className="h-6 sm:h-8 w-[2px] bg-white/10" />
 
             {/* Execute Button */}
             <button
                onClick={handleExecute}
                disabled={isSimulating}
                className={cn(
-                  "group relative flex items-center gap-3 rounded-full px-8 py-4 font-bold tracking-[0.2em] transition-all active:scale-95",
+                  "group relative flex items-center gap-2 sm:gap-3 rounded-full px-6 py-3 sm:px-8 sm:py-4 font-bold tracking-[0.2em] transition-all active:scale-95 text-xs sm:text-base",
                   isSimulating
                      ? "bg-yellow-500 text-black cursor-wait"
                      : result === true
