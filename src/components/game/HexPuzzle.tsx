@@ -6,12 +6,12 @@ import { Zap, RotateCw, Lock, Unlock } from 'lucide-react';
 // --- Types ---
 interface HexTile {
   id: number;
-  q: number; 
-  r: number; 
+  q: number;
+  r: number;
   type: 'STRAIGHT' | 'CORNER' | 'TRI' | 'EMPTY' | 'SOURCE' | 'TARGET';
   rotation: number; // 0 to 5
   fixed: boolean;
-  active: boolean; 
+  active: boolean;
 }
 
 interface PuzzleProps {
@@ -29,11 +29,11 @@ const DIRECTIONS = [
 ];
 
 const TILE_DEFINITIONS = {
-  'STRAIGHT': [0, 3],       
-  'CORNER': [1, 3],         
-  'TRI': [0, 2, 4],         
-  'SOURCE': [0, 1, 2, 3, 4, 5], 
-  'TARGET': [0, 1, 2, 3, 4, 5], 
+  'STRAIGHT': [0, 3],
+  'CORNER': [1, 3],
+  'TRI': [0, 2, 4],
+  'SOURCE': [0, 1, 2, 3, 4, 5],
+  'TARGET': [0, 1, 2, 3, 4, 5],
   'EMPTY': []
 };
 
@@ -41,7 +41,7 @@ const TILE_DEFINITIONS = {
 const COMPLEX_GRID: HexTile[] = [
   // Center (Target)
   { id: 0, q: 0, r: 0, type: 'TARGET', rotation: 0, fixed: true, active: false },
-  
+
   // Ring 1
   { id: 1, q: 0, r: -1, type: 'STRAIGHT', rotation: 0, fixed: false, active: false },
   { id: 2, q: 1, r: -1, type: 'CORNER', rotation: 0, fixed: false, active: false },
@@ -79,17 +79,17 @@ export const HexPuzzle: React.FC<PuzzleProps> = ({ onComplete }) => {
   // Initialize with randomization
   useEffect(() => {
     const randomized = COMPLEX_GRID.map(t => {
-       if (t.fixed) return t;
-       return { ...t, rotation: Math.floor(Math.random() * 6) };
+      if (t.fixed) return t;
+      return { ...t, rotation: Math.floor(Math.random() * 6) };
     });
     setGrid(updateSignalFlow(randomized));
   }, []);
 
   const getPorts = useCallback((tile: HexTile) => {
     let base = TILE_DEFINITIONS[tile.type] || [];
-    if (tile.type === 'CORNER') base = [1, 3]; 
-    if (tile.type === 'STRAIGHT') base = [0, 3]; 
-    if (tile.type === 'TRI') base = [0, 2, 4]; 
+    if (tile.type === 'CORNER') base = [1, 3];
+    if (tile.type === 'STRAIGHT') base = [0, 3];
+    if (tile.type === 'TRI') base = [0, 2, 4];
     return base.map(p => (p + tile.rotation) % 6);
   }, []);
 
@@ -111,13 +111,13 @@ export const HexPuzzle: React.FC<PuzzleProps> = ({ onComplete }) => {
         const dirOffset = DIRECTIONS[portDir];
         const neighborQ = current.q + dirOffset.q;
         const neighborR = current.r + dirOffset.r;
-        
+
         const neighbor = nextGrid.find(t => t.q === neighborQ && t.r === neighborR);
-        
+
         if (neighbor && !visited.has(neighbor.id)) {
           const neighborPorts = getPorts(neighbor);
-          const requiredBackPort = (portDir + 3) % 6; 
-          
+          const requiredBackPort = (portDir + 3) % 6;
+
           if (neighborPorts.includes(requiredBackPort)) {
             neighbor.active = true;
             visited.add(neighbor.id);
@@ -141,18 +141,18 @@ export const HexPuzzle: React.FC<PuzzleProps> = ({ onComplete }) => {
       });
       return updateSignalFlow(newGrid);
     });
-    
+
     setMoves(m => m + 1);
   };
 
   const handleUnlock = () => {
-     if (isReadyToUnlock) {
-        setIsCompleted(true);
-        const timeTaken = (Date.now() - startTime) / 1000;
-        setTimeout(() => {
-           onComplete({ moves, time: timeTaken });
-        }, 1500);
-     }
+    if (isReadyToUnlock) {
+      setIsCompleted(true);
+      const timeTaken = (Date.now() - startTime) / 1000;
+      setTimeout(() => {
+        onComplete({ moves, time: timeTaken });
+      }, 1500);
+    }
   };
 
   useEffect(() => {
@@ -163,14 +163,14 @@ export const HexPuzzle: React.FC<PuzzleProps> = ({ onComplete }) => {
   // Viewport calculation
   const hexSize = 55; // Optimized for 800x600 container
   const getHexCoords = (q: number, r: number) => {
-    const x = hexSize * (Math.sqrt(3) * (q + r/2));
-    const y = hexSize * (3/2 * r);
+    const x = hexSize * (Math.sqrt(3) * (q + r / 2));
+    const y = hexSize * (3 / 2 * r);
     return { x, y };
   };
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-[#050508]/80">
-      
+
       {/* HUD Info */}
       <div className="absolute top-4 right-4 text-right font-mono text-xs text-[#00E6FF]/70 z-50 pointer-events-none">
         <div className="text-xl font-bold">{isReadyToUnlock ? "LINK ESTABLISHED" : "NO CARRIER"}</div>
@@ -178,17 +178,17 @@ export const HexPuzzle: React.FC<PuzzleProps> = ({ onComplete }) => {
         <div>HOP_COUNT: {moves}</div>
       </div>
 
-      <div className="relative h-[600px] w-full max-w-[800px] scale-90 md:scale-100 touch-none">
+      <div className="relative h-[600px] w-full max-w-[800px] scale-[0.55] sm:scale-75 md:scale-100 touch-none transition-transform duration-300">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {grid.map((tile) => {
             const { x, y } = getHexCoords(tile.q, tile.r);
             return (
-              <Tile 
-                key={tile.id} 
-                tile={tile} 
-                x={x} 
-                y={y} 
-                onClick={() => tile.type === 'TARGET' ? handleUnlock() : handleRotate(tile.id)} 
+              <Tile
+                key={tile.id}
+                tile={tile}
+                x={x}
+                y={y}
+                onClick={() => tile.type === 'TARGET' ? handleUnlock() : handleRotate(tile.id)}
                 isReadyToUnlock={isReadyToUnlock && tile.type === 'TARGET'}
                 isCompleted={isCompleted && tile.type === 'TARGET'}
               />
@@ -200,11 +200,11 @@ export const HexPuzzle: React.FC<PuzzleProps> = ({ onComplete }) => {
   );
 };
 
-const Tile = React.memo(({ tile, x, y, onClick, isReadyToUnlock, isCompleted }: { 
-  tile: HexTile, x: number, y: number, onClick: () => void, isReadyToUnlock?: boolean, isCompleted?: boolean 
+const Tile = React.memo(({ tile, x, y, onClick, isReadyToUnlock, isCompleted }: {
+  tile: HexTile, x: number, y: number, onClick: () => void, isReadyToUnlock?: boolean, isCompleted?: boolean
 }) => {
   const isTarget = tile.type === 'TARGET';
-  
+
   return (
     <motion.div
       className={cn(
@@ -213,23 +213,23 @@ const Tile = React.memo(({ tile, x, y, onClick, isReadyToUnlock, isCompleted }: 
         tile.fixed && !isTarget ? "opacity-50" : "opacity-100",
         isTarget && "z-10"
       )}
-      style={{ 
-        left: x, 
-        top: y, 
-        marginLeft: -30, 
-        marginTop: -35, 
+      style={{
+        left: x,
+        top: y,
+        marginLeft: -30,
+        marginTop: -35,
       }}
       initial={false}
       onClick={onClick}
     >
       <motion.div
         animate={{ rotate: tile.rotation * 60 }}
-        transition={{ type: "spring", stiffness: 400, damping: 25 }} 
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
         className="relative h-full w-full"
       >
         <svg viewBox="0 0 100 115" className="drop-shadow-lg overflow-visible">
-          <path 
-            d="M50 0 L93.3 25 V75 L50 100 L6.7 75 V25 Z" 
+          <path
+            d="M50 0 L93.3 25 V75 L50 100 L6.7 75 V25 Z"
             className={cn(
               "fill-[#12121A] stroke-2 transition-colors duration-200",
               tile.active ? "stroke-[#00E6FF] fill-[#12121A]/80" : "stroke-white/10",
@@ -237,10 +237,10 @@ const Tile = React.memo(({ tile, x, y, onClick, isReadyToUnlock, isCompleted }: 
               isCompleted && "fill-[#00E6FF] stroke-white shadow-[0_0_50px_white]"
             )}
           />
-          
+
           <g className={cn(
-            "stroke-[8] stroke-linecap-round transition-colors duration-100", 
-            tile.active ? "stroke-[#00E6FF]" : "stroke-[#333]" 
+            "stroke-[8] stroke-linecap-round transition-colors duration-100",
+            tile.active ? "stroke-[#00E6FF]" : "stroke-[#333]"
           )}>
             {tile.type === 'STRAIGHT' && <path d="M 75 12 L 25 88" />}
             {tile.type === 'CORNER' && <path d="M 93 50 L 50 50 L 25 88" />}
@@ -250,16 +250,16 @@ const Tile = React.memo(({ tile, x, y, onClick, isReadyToUnlock, isCompleted }: 
         </svg>
 
         {isTarget && (
-          <div className="absolute inset-0 flex items-center justify-center rotate-[-0deg]"> 
-            <motion.div 
-               animate={{ scale: isReadyToUnlock ? 1.2 : 1 }}
-               className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-full border-2 bg-black/80 backdrop-blur-md transition-all",
-                  isCompleted ? "border-white bg-[#00E6FF] text-black" :
+          <div className="absolute inset-0 flex items-center justify-center rotate-[-0deg]">
+            <motion.div
+              animate={{ scale: isReadyToUnlock ? 1.2 : 1 }}
+              className={cn(
+                "flex h-8 w-8 items-center justify-center rounded-full border-2 bg-black/80 backdrop-blur-md transition-all",
+                isCompleted ? "border-white bg-[#00E6FF] text-black" :
                   isReadyToUnlock ? "border-[#00E6FF] text-[#00E6FF] shadow-[0_0_20px_#00E6FF] animate-pulse cursor-pointer" : "border-white/10 text-white/20"
-               )}
+              )}
             >
-               {isCompleted ? <Zap size={16} /> : isReadyToUnlock ? <Unlock size={16} /> : <Lock size={12} />}
+              {isCompleted ? <Zap size={16} /> : isReadyToUnlock ? <Unlock size={16} /> : <Lock size={12} />}
             </motion.div>
           </div>
         )}

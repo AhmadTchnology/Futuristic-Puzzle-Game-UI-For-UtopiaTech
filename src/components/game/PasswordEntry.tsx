@@ -16,7 +16,7 @@ export const PasswordEntry: React.FC<PasswordEntryProps> = ({ onComplete, userNa
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (password === 'Utech2025') {
+        if (password === 'Utech2026') {
             onComplete();
         } else {
             setError(true);

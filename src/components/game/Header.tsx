@@ -9,15 +9,15 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ userName }) => {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-white/5 bg-[#0A0A0F]/80 p-6 backdrop-blur-md">
-      <div className="flex items-center gap-6">
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-white/5 bg-[#0A0A0F]/80 p-4 md:p-6 backdrop-blur-md">
+      <div className="flex items-center gap-4 md:gap-6">
         {/* Logo */}
         <div className="relative group">
           <div className="absolute -inset-2 rounded-lg bg-[#00E6FF]/20 blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
           <img
             src={exampleImage}
             alt="UTech Logo"
-            className="relative h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(0,230,255,0.5)]"
+            className="relative h-8 md:h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(0,230,255,0.5)]"
           />
         </div>
 
@@ -35,21 +35,28 @@ export const Header: React.FC<HeaderProps> = ({ userName }) => {
 
       {/* Decorative Top Elements */}
       <div className="flex items-center gap-4 text-white/20">
-        <BackgroundMusic />
-        <div className="h-8 w-px bg-white/10 mx-2" /> {/* Separator */}
+        <div className="hidden sm:block">
+          <BackgroundMusic />
+        </div>
+        <div className="hidden sm:block h-8 w-px bg-white/10 mx-2" /> {/* Separator */}
         {userName && (
           <>
             <div className="hidden md:flex items-center gap-2 text-[#00E6FF] font-mono text-xs tracking-widest">
               <span className="opacity-50">OPERATOR:</span>
               <span className="font-bold">{userName.toUpperCase()}</span>
             </div>
-            <div className="h-8 w-px bg-white/10 mx-2" />
+            <div className="hidden md:block h-8 w-px bg-white/10 mx-2" />
           </>
         )}
-        <div className="h-8 w-px bg-white/10 mx-2" /> {/* Separator */}
-        <Activity size={16} />
-        <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        <span className="font-mono text-xs">V.2.0.45</span>
+        <div className="hidden sm:block h-8 w-px bg-white/10 mx-2" /> {/* Separator */}
+        <Activity size={16} className="hidden sm:block" />
+        <div className="hidden sm:block h-px w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <span className="font-mono text-xs hidden sm:inline">V.2.0.45</span>
+
+        {/* Mobile Music Toggle (if needed, or just keep it hidden/icon only) */}
+        <div className="sm:hidden">
+          <BackgroundMusic />
+        </div>
       </div>
     </header>
   );

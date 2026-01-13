@@ -258,12 +258,12 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="relative flex h-full w-full flex-col items-center justify-center p-8"
+              className="relative flex h-full w-full flex-col items-center justify-center p-4 md:p-8 overflow-hidden"
             >
               {/* Back Button */}
               <button
                 onClick={() => triggerTransition('HUB', 'HUB')}
-                className="absolute left-8 top-4 flex items-center gap-2 text-xs font-bold text-white/50 hover:text-white z-50"
+                className="absolute left-4 top-4 md:left-8 flex items-center gap-2 text-xs font-bold text-white/50 hover:text-white z-50"
               >
                 <ArrowLeft size={16} /> ABORT BREACH
               </button>
