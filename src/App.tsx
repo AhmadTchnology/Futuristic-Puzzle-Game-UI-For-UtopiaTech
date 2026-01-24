@@ -263,9 +263,10 @@ export default function App() {
               {/* Back Button */}
               <button
                 onClick={() => triggerTransition('HUB', 'HUB')}
-                className="absolute left-4 top-4 md:left-8 flex items-center gap-2 text-xs font-bold text-white/50 hover:text-white z-50"
+                style={{ position: 'fixed', left: '16px', top: '96px', zIndex: 50 }}
+                className="text-white/50 hover:text-white transition-colors"
               >
-                <ArrowLeft size={16} /> ABORT BREACH
+                <ArrowLeft size={20} />
               </button>
 
               {!showTutorial && (
