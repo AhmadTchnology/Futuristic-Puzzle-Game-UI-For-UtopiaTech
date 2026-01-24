@@ -104,13 +104,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
 
                     {/* Leaderboard Container */}
                     <div className="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden shadow-[0_0_50px_rgba(0,230,255,0.15)]">
-                        {/* Table Header */}
-                        <div className="grid grid-cols-[60px_1fr_100px_100px] sm:grid-cols-[80px_1fr_120px_120px] gap-2 sm:gap-4 border-b border-[#00E6FF]/30 bg-[#00E6FF]/5 px-3 sm:px-6 py-3 sm:py-4">
-                            <div className="font-mono text-[10px] sm:text-xs font-bold tracking-widest text-[#00E6FF]">RANK</div>
-                            <div className="font-mono text-[10px] sm:text-xs font-bold tracking-widest text-[#00E6FF]">OPERATOR</div>
-                            <div className="font-mono text-[10px] sm:text-xs font-bold tracking-widest text-[#00E6FF] text-right">SCORE</div>
-                            <div className="font-mono text-[10px] sm:text-xs font-bold tracking-widest text-[#00E6FF] text-right">TIME</div>
-                        </div>
+
 
                         {/* Leaderboard Entries */}
                         <div className="max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
