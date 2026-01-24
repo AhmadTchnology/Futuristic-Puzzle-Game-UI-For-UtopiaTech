@@ -20,8 +20,9 @@ import { useClickSound } from './hooks/useClickSound';
 
 import { NameEntry } from './components/game/NameEntry';
 import { PasswordEntry } from './components/game/PasswordEntry';
+import { Leaderboard } from './components/game/Leaderboard';
 
-type GameState = 'INTRO' | 'NAME_INPUT' | 'PASSWORD_INPUT' | 'HUB' | 'PUZZLE' | 'VIEWER';
+type GameState = 'INTRO' | 'NAME_INPUT' | 'PASSWORD_INPUT' | 'HUB' | 'PUZZLE' | 'VIEWER' | 'LEADERBOARD';
 
 // Puzzle Metadata for Tutorials
 const PUZZLE_INFO: Record<NodeType, { title: string; description: string; difficulty: 'EASY' | 'MEDIUM' | 'HARD' }> = {
@@ -138,6 +139,14 @@ export default function App() {
     triggerTransition('VIEWER', 'DATABASE');
   };
 
+  const handleLeaderboardClick = () => {
+    triggerTransition('LEADERBOARD', 'DEFAULT');
+  };
+
+  const handleLeaderboardBack = () => {
+    triggerTransition('HUB', 'HUB');
+  };
+
   const handlePuzzleComplete = () => {
     if (activeNode) {
       if (!completedNodes.includes(activeNode)) {
@@ -247,6 +256,7 @@ export default function App() {
                 onNodeClick={handleNodeClick}
                 onDatabaseClick={handleDatabaseClick}
                 onShowAnalysis={endTime > 0 ? handleShowAnalysis : undefined}
+                onLeaderboardClick={handleLeaderboardClick}
               />
             </motion.div>
           )}
@@ -287,6 +297,19 @@ export default function App() {
           {/* STATE: VIEWER (Result) */}
           {gameState === 'VIEWER' && activeNode && (
             <FileViewer type={activeNode} onClose={handleViewerClose} />
+          )}
+
+          {/* STATE: LEADERBOARD */}
+          {gameState === 'LEADERBOARD' && (
+            <motion.div
+              key="leaderboard"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1"
+            >
+              <Leaderboard onBack={handleLeaderboardBack} />
+            </motion.div>
           )}
 
         </AnimatePresence>

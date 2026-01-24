@@ -19,9 +19,10 @@ interface NetworkHubProps {
   onNodeClick: (node: NodeType) => void;
   onDatabaseClick: () => void;
   onShowAnalysis?: () => void;
+  onLeaderboardClick?: () => void;
 }
 
-export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeClick, onDatabaseClick, onShowAnalysis }) => {
+export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeClick, onDatabaseClick, onShowAnalysis, onLeaderboardClick }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const initialNodes: NetworkNode[] = [
@@ -63,7 +64,6 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
       ref={containerRef}
       className="relative h-full w-full overflow-hidden bg-[#050508] perspective-[1000px]"
     >
-      {/* Background Grid */}
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
         <div
           className="h-full w-full"
@@ -76,14 +76,11 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
       </div>
 
       <div className="relative flex h-full w-full items-center justify-center transform-style-3d">
-
-        {/* Rotating Network Container */}
         <motion.div
           className="relative flex h-[600px] w-[600px] items-center justify-center scale-[0.65] sm:scale-75 md:scale-100 transition-transform duration-300"
           animate={{ rotate: 360 }}
           transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
         >
-          {/* Complex Connections Lines (Zigzag/Interfaced) */}
           <svg className="absolute inset-0 h-full w-full pointer-events-none animate-[pulse_4s_ease-in-out_infinite]" style={{ transform: 'scale(1.2)' }}>
             <defs>
               <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -93,12 +90,10 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
               </linearGradient>
             </defs>
 
-            {/* Central Web */}
             <circle cx="50%" cy="50%" r="100" fill="none" stroke="#00E6FF" strokeWidth="1" strokeDasharray="10,5" opacity="0.3" />
             <circle cx="50%" cy="50%" r="200" fill="none" stroke="#00E6FF" strokeWidth="1" strokeDasharray="2,10" opacity="0.2" />
             <circle cx="50%" cy="50%" r="280" fill="none" stroke="#00E6FF" strokeWidth="2" strokeDasharray="20,20" opacity="0.1" />
 
-            {/* Hexagon Connections */}
             {Array.from({ length: 6 }).map((_, i) => {
               const angle = (i * 60) * (Math.PI / 180);
               const x1 = 300 + Math.cos(angle) * 100;
@@ -111,7 +106,6 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
             })}
           </svg>
 
-          {/* Central Core (Counter-Rotating to stay upright relative to user? No, let it spin but icons stay upright) */}
           <motion.div
             className="absolute z-20"
             animate={{ rotate: -360 }}
@@ -128,22 +122,17 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
               )}
             >
               <Database size={40} className={cn("transition-colors", allSubNodesCompleted ? "text-[#00E6FF]" : "text-white/20")} />
-              {/* Status Indicator */}
               <div className="absolute -bottom-8 whitespace-nowrap text-[10px] font-mono tracking-widest text-[#00E6FF]">
                 {allSubNodesCompleted ? "ROOT ACCESS" : "LOCKED"}
               </div>
             </button>
           </motion.div>
 
-          {/* Satellites */}
           {nodes.map((node, i) => {
-            // Dynamic layout calculation based on number of nodes
             const totalNodes = nodes.length;
-
-            // Distribute evenly in a circle starting from top ( -90 degrees)
             const angle = (i * (360 / totalNodes)) - 90;
 
-            const radius = isMobile ? 160 : 240; // Distance from center
+            const radius = isMobile ? 160 : 240;
             const rad = angle * (Math.PI / 180);
             const x = Math.cos(rad) * radius;
             const y = Math.sin(rad) * radius;
@@ -151,7 +140,7 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
             return (
               <motion.div
                 key={node.id}
-                layout // Animate position changes when array changes
+                layout
                 className="absolute"
                 style={{ x, y }}
                 transition={{ type: "spring", stiffness: 50, damping: 20 }}
@@ -164,7 +153,7 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
                       onNodeClick(node.id);
                     }
                   }}
-                  animate={{ rotate: -360 }} // Counter rotation
+                  animate={{ rotate: -360 }}
                   transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
                   className={cn(
                     "relative flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-xl border bg-black/90 p-2 backdrop-blur-md transition-all duration-300 shadow-xl",
@@ -183,7 +172,6 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
 
                   <div className="text-[10px] font-bold tracking-widest">{node.label}</div>
 
-                  {/* Status Dot */}
                   <div className={cn(
                     "absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-black",
                     node.id === 'IDENTITY'
@@ -196,16 +184,37 @@ export const NetworkHub: React.FC<NetworkHubProps> = ({ completedNodes, onNodeCl
           })}
 
         </motion.div>
-
       </div>
 
-      {/* Decorative Overlay */}
       <div className="pointer-events-none absolute inset-0 z-50 bg-[radial-gradient(circle_at_center,transparent_50%,#000000_100%)] opacity-80" />
-      <div className="pointer-events-none absolute bottom-8 right-8 text-right font-mono text-xs text-white/30">
+
+      {onLeaderboardClick && (
+        <button
+          onClick={onLeaderboardClick}
+          style={{
+            position: 'absolute',
+            right: 16,
+            bottom: 70,
+            zIndex: 60,
+            color: '#ffffff',
+            background: 'rgba(0, 0, 0, 0.7)',
+            border: '1px solid rgba(0, 230, 255, 0.5)',
+            padding: '8px 12px',
+            borderRadius: 10,
+            backdropFilter: 'blur(8px)',
+            fontSize: 12,
+            letterSpacing: '0.2em',
+          }}
+          className="pointer-events-auto font-mono"
+        >
+          → LEADERBOARD
+        </button>
+      )}
+
+      <div className="pointer-events-none absolute bottom-8 right-4 sm:right-8 text-right font-mono text-[10px] sm:text-xs text-white/30">
         NETWORK_TOPOLOGY: RING_MESH_V4<br />
         STATUS: ACTIVE_SCANNING
       </div>
-
     </div>
   );
 };
