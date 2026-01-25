@@ -12,10 +12,11 @@ app.use(express.json());
 // Get leaderboard
 app.get('/api/leaderboard', async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM leaderboard ORDER BY score DESC LIMIT 100');
+        // Sort by duration_seconds ASC (lowest time is best), then score DESC
+        const result = await db.query('SELECT * FROM leaderboard ORDER BY duration_seconds ASC, score DESC LIMIT 100');
         // Map database columns to frontend interface if needed, or just return as is
         // Frontend expects: rank, operatorName, score, timeCompleted
-        // DB has: id, operator_name, score, time_completed, created_at
+        // DB has: id, operator_name, score, time_completed, duration_seconds, created_at
 
         const formattedData = result.rows.map((row, index) => ({
             rank: index + 1,
@@ -33,7 +34,7 @@ app.get('/api/leaderboard', async (req, res) => {
 
 // Submit score
 app.post('/api/leaderboard', async (req, res) => {
-    const { operatorName, score, timeCompleted } = req.body;
+    const { operatorName, score, timeCompleted, durationSeconds } = req.body;
 
     if (!operatorName || score === undefined || !timeCompleted) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -41,8 +42,8 @@ app.post('/api/leaderboard', async (req, res) => {
 
     try {
         const result = await db.query(
-            'INSERT INTO leaderboard (operator_name, score, time_completed) VALUES ($1, $2, $3) RETURNING *',
-            [operatorName, score, timeCompleted]
+            'INSERT INTO leaderboard (operator_name, score, time_completed, duration_seconds) VALUES ($1, $2, $3, $4) RETURNING *',
+            [operatorName, score, timeCompleted, durationSeconds]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {

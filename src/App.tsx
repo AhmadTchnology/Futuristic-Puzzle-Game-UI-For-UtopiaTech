@@ -94,11 +94,12 @@ export default function App() {
 
   const handleNameSubmit = useCallback((name: string) => {
     setUserName(name);
+    setStartTime(Date.now()); // Start timer here
     triggerTransition('PASSWORD_INPUT');
   }, [triggerTransition]);
 
   const handlePasswordSuccess = useCallback(() => {
-    setStartTime(Date.now());
+    // Timer already started at name submit
     triggerTransition('HUB', 'HUB');
   }, [triggerTransition]);
 
@@ -120,33 +121,8 @@ export default function App() {
   const handleDatabaseClick = () => {
     // If first time entering, set end time and show analysis
     if (endTime === 0) {
-      const now = Date.now();
-      setEndTime(now);
+      // Logic moved to handlePuzzleComplete
       setShowAnalysis(true);
-
-      // Calculate score and submit to leaderboard
-      const durationMs = now - startTime;
-      const durationSeconds = Math.floor(durationMs / 1000);
-      const calculatedScore = Math.max(0, 10000 - (durationSeconds * 10)); // Simple score formula
-
-      const minutes = Math.floor(durationSeconds / 60);
-      const seconds = durationSeconds % 60;
-      const timeString = `${minutes}m ${seconds}s`;
-
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/leaderboard';
-
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          operatorName: userName,
-          score: calculatedScore,
-          timeCompleted: timeString,
-        }),
-      }).catch(err => console.error('Failed to submit score:', err));
-
     } else {
       // If re-entering, just show viewer (analysis can be accessed via hub node)
       setActiveNode('DATABASE');
@@ -174,11 +150,49 @@ export default function App() {
 
   const handlePuzzleComplete = () => {
     if (activeNode) {
+      let newCompletedNodes = completedNodes;
       if (!completedNodes.includes(activeNode)) {
-        setCompletedNodes(prev => [...prev, activeNode]);
+        newCompletedNodes = [...completedNodes, activeNode];
+        setCompletedNodes(newCompletedNodes);
         // Taunt success
         if ((window as any).triggerSystemTaunt) (window as any).triggerSystemTaunt('success');
       }
+
+      // Check if all puzzles are complete (excluding non-puzzle nodes if any, but currently all 6 are puzzles)
+      // The initialNodes in NetworkHub are: TEAM, PROJECTS, SOCIALS, VISION, SECURITY, POWER
+      const allPuzzles = ['TEAM', 'PROJECTS', 'SOCIALS', 'VISION', 'SECURITY', 'POWER'];
+      const allComplete = allPuzzles.every(node => newCompletedNodes.includes(node as NodeType));
+
+      if (allComplete && endTime === 0) {
+        const now = Date.now();
+        setEndTime(now);
+
+        // Calculate score and submit to leaderboard
+        const durationMs = now - startTime;
+        const durationSeconds = Math.floor(durationMs / 1000);
+        // New score formula: Higher score for lower time. Base 100,000 minus seconds taken.
+        const calculatedScore = Math.max(0, 100000 - durationSeconds);
+
+        const minutes = Math.floor(durationSeconds / 60);
+        const seconds = durationSeconds % 60;
+        const timeString = `${minutes}m ${seconds}s`;
+
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/leaderboard';
+
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            operatorName: userName,
+            score: calculatedScore,
+            timeCompleted: timeString,
+            durationSeconds: durationSeconds,
+          }),
+        }).catch(err => console.error('Failed to submit score:', err));
+      }
+
       // Return to HUB immediately instead of showing viewer
       triggerTransition('HUB', 'HUB');
     }
