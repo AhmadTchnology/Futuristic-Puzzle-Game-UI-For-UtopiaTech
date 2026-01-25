@@ -26,6 +26,16 @@ const MOCK_LEADERBOARD_DATA: LeaderboardEntry[] = [
     { rank: 8, operatorName: 'QUANTUM_HACK', score: 8420, timeCompleted: '2m 18s' },
     { rank: 9, operatorName: 'STATIC_VOID', score: 8150, timeCompleted: '2m 34s' },
     { rank: 10, operatorName: 'DATA_WRAITH', score: 7890, timeCompleted: '2m 51s' },
+    { rank: 11, operatorName: 'PIXEL_PHANTOM', score: 7620, timeCompleted: '3m 08s' },
+    { rank: 12, operatorName: 'BYTE_REAPER', score: 7380, timeCompleted: '3m 25s' },
+    { rank: 13, operatorName: 'CODE_NINJA', score: 7150, timeCompleted: '3m 42s' },
+    { rank: 14, operatorName: 'MATRIX_RUNNER', score: 6920, timeCompleted: '4m 01s' },
+    { rank: 15, operatorName: 'SHADOW_BYTE', score: 6680, timeCompleted: '4m 18s' },
+    { rank: 16, operatorName: 'NEON_STRIKER', score: 6450, timeCompleted: '4m 35s' },
+    { rank: 17, operatorName: 'ECHO_PULSE', score: 6210, timeCompleted: '4m 52s' },
+    { rank: 18, operatorName: 'GRID_WALKER', score: 5970, timeCompleted: '5m 10s' },
+    { rank: 19, operatorName: 'FLUX_HUNTER', score: 5730, timeCompleted: '5m 28s' },
+    { rank: 20, operatorName: 'CYBER_SENTINEL', score: 5490, timeCompleted: '5m 45s' },
 ];
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
@@ -106,8 +116,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                     <div className="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden shadow-[0_0_50px_rgba(0,230,255,0.15)]">
 
 
-                        {/* Leaderboard Entries */}
-                        <div className="max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
+                        {/* Leaderboard Entries - Scrollable */}
+                        <div className="h-[400px] overflow-y-auto custom-scrollbar">
                             {MOCK_LEADERBOARD_DATA.map((entry, index) => (
                                 <motion.div
                                     key={entry.rank}
@@ -145,18 +155,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                         </div>
 
                         {/* Footer Note */}
-                        <div className="border-t border-white/10 bg-white/5 px-3 sm:px-6 py-3 sm:py-4">
-                            <p className="font-mono text-[9px] sm:text-[10px] tracking-wider text-white/40 text-center">
-                                RANKINGS_UPDATE: REAL-TIME // DATABASE_SYNC: PENDING
-                            </p>
-                        </div>
+
                     </div>
 
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4 sm:mt-6">
                         <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl p-3 sm:p-4">
                             <div className="font-mono text-[10px] tracking-widest text-white/50 mb-1">TOTAL OPERATIVES</div>
-                            <div className="text-xl sm:text-2xl font-bold text-[#00E6FF]">10</div>
+                            <div className="text-xl sm:text-2xl font-bold text-[#00E6FF]">20</div>
                         </div>
                         <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl p-3 sm:p-4">
                             <div className="font-mono text-[10px] tracking-widest text-white/50 mb-1">FASTEST BREACH</div>
