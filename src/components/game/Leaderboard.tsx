@@ -15,7 +15,7 @@ interface LeaderboardProps {
 }
 
 // Mock data removed in favor of API fetch
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/leaderboard';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
     const [leaderboardData, setLeaderboardData] = React.useState<LeaderboardEntry[]>([]);
