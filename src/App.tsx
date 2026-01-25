@@ -120,8 +120,33 @@ export default function App() {
   const handleDatabaseClick = () => {
     // If first time entering, set end time and show analysis
     if (endTime === 0) {
-      setEndTime(Date.now());
+      const now = Date.now();
+      setEndTime(now);
       setShowAnalysis(true);
+
+      // Calculate score and submit to leaderboard
+      const durationMs = now - startTime;
+      const durationSeconds = Math.floor(durationMs / 1000);
+      const calculatedScore = Math.max(0, 10000 - (durationSeconds * 10)); // Simple score formula
+
+      const minutes = Math.floor(durationSeconds / 60);
+      const seconds = durationSeconds % 60;
+      const timeString = `${minutes}m ${seconds}s`;
+
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/leaderboard';
+
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          operatorName: userName,
+          score: calculatedScore,
+          timeCompleted: timeString,
+        }),
+      }).catch(err => console.error('Failed to submit score:', err));
+
     } else {
       // If re-entering, just show viewer (analysis can be accessed via hub node)
       setActiveNode('DATABASE');

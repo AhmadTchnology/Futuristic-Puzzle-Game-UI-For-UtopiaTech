@@ -14,31 +14,33 @@ interface LeaderboardProps {
     onBack: () => void;
 }
 
-// Mock data - will be replaced with database connection later
-const MOCK_LEADERBOARD_DATA: LeaderboardEntry[] = [
-    { rank: 1, operatorName: 'PHANTOM_ZERO', score: 9850, timeCompleted: '45s' },
-    { rank: 2, operatorName: 'CYBER_GHOST', score: 9720, timeCompleted: '52s' },
-    { rank: 3, operatorName: 'NET_SHADOW', score: 9580, timeCompleted: '58s' },
-    { rank: 4, operatorName: 'VOID_WALKER', score: 9340, timeCompleted: '1m 12s' },
-    { rank: 5, operatorName: 'DARK_CIPHER', score: 9100, timeCompleted: '1m 28s' },
-    { rank: 6, operatorName: 'NEON_BLADE', score: 8890, timeCompleted: '1m 45s' },
-    { rank: 7, operatorName: 'GHOST_PROTOCOL', score: 8650, timeCompleted: '2m 03s' },
-    { rank: 8, operatorName: 'QUANTUM_HACK', score: 8420, timeCompleted: '2m 18s' },
-    { rank: 9, operatorName: 'STATIC_VOID', score: 8150, timeCompleted: '2m 34s' },
-    { rank: 10, operatorName: 'DATA_WRAITH', score: 7890, timeCompleted: '2m 51s' },
-    { rank: 11, operatorName: 'PIXEL_PHANTOM', score: 7620, timeCompleted: '3m 08s' },
-    { rank: 12, operatorName: 'BYTE_REAPER', score: 7380, timeCompleted: '3m 25s' },
-    { rank: 13, operatorName: 'CODE_NINJA', score: 7150, timeCompleted: '3m 42s' },
-    { rank: 14, operatorName: 'MATRIX_RUNNER', score: 6920, timeCompleted: '4m 01s' },
-    { rank: 15, operatorName: 'SHADOW_BYTE', score: 6680, timeCompleted: '4m 18s' },
-    { rank: 16, operatorName: 'NEON_STRIKER', score: 6450, timeCompleted: '4m 35s' },
-    { rank: 17, operatorName: 'ECHO_PULSE', score: 6210, timeCompleted: '4m 52s' },
-    { rank: 18, operatorName: 'GRID_WALKER', score: 5970, timeCompleted: '5m 10s' },
-    { rank: 19, operatorName: 'FLUX_HUNTER', score: 5730, timeCompleted: '5m 28s' },
-    { rank: 20, operatorName: 'CYBER_SENTINEL', score: 5490, timeCompleted: '5m 45s' },
-];
+// Mock data removed in favor of API fetch
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/leaderboard';
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
+    const [leaderboardData, setLeaderboardData] = React.useState<LeaderboardEntry[]>([]);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        const fetchLeaderboard = async () => {
+            try {
+                const response = await fetch(API_URL);
+                if (response.ok) {
+                    const data = await response.json();
+                    setLeaderboardData(data);
+                } else {
+                    console.error('Failed to fetch leaderboard data');
+                }
+            } catch (error) {
+                console.error('Error fetching leaderboard:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchLeaderboard();
+    }, []);
+
     const getRankIcon = (rank: number) => {
         switch (rank) {
             case 1:
@@ -118,40 +120,46 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
 
                         {/* Leaderboard Entries - Scrollable */}
                         <div className="h-[400px] overflow-y-auto custom-scrollbar">
-                            {MOCK_LEADERBOARD_DATA.map((entry, index) => (
-                                <motion.div
-                                    key={entry.rank}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    className={cn(
-                                        "grid grid-cols-[60px_1fr_100px_100px] sm:grid-cols-[80px_1fr_120px_120px] gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 border-b border-white/5 transition-all duration-300",
-                                        entry.rank <= 3 ? "bg-white/5 hover:bg-white/10" : "hover:bg-white/5",
-                                        entry.rank === 1 && "shadow-[0_0_30px_rgba(234,179,8,0.1)]"
-                                    )}
-                                >
-                                    {/* Rank */}
-                                    <div className={cn("flex items-center gap-1 sm:gap-2 font-mono text-sm sm:text-lg font-bold", getRankColor(entry.rank))}>
-                                        {getRankIcon(entry.rank)}
-                                        <span>#{entry.rank}</span>
-                                    </div>
+                            {loading ? (
+                                <div className="flex h-full items-center justify-center text-[#00E6FF] font-mono animate-pulse">
+                                    LOADING_DATABASE...
+                                </div>
+                            ) : (
+                                leaderboardData.map((entry, index) => (
+                                    <motion.div
+                                        key={entry.rank}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        className={cn(
+                                            "grid grid-cols-[60px_1fr_100px_100px] sm:grid-cols-[80px_1fr_120px_120px] gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 border-b border-white/5 transition-all duration-300",
+                                            entry.rank <= 3 ? "bg-white/5 hover:bg-white/10" : "hover:bg-white/5",
+                                            entry.rank === 1 && "shadow-[0_0_30px_rgba(234,179,8,0.1)]"
+                                        )}
+                                    >
+                                        {/* Rank */}
+                                        <div className={cn("flex items-center gap-1 sm:gap-2 font-mono text-sm sm:text-lg font-bold", getRankColor(entry.rank))}>
+                                            {getRankIcon(entry.rank)}
+                                            <span>#{entry.rank}</span>
+                                        </div>
 
-                                    {/* Operator Name */}
-                                    <div className="flex items-center font-mono text-xs sm:text-sm font-medium text-white/90 truncate">
-                                        {entry.operatorName}
-                                    </div>
+                                        {/* Operator Name */}
+                                        <div className="flex items-center font-mono text-xs sm:text-sm font-medium text-white/90 truncate">
+                                            {entry.operatorName}
+                                        </div>
 
-                                    {/* Score */}
-                                    <div className="flex items-center justify-end font-mono text-xs sm:text-sm font-bold text-[#00E6FF]">
-                                        {entry.score.toLocaleString()}
-                                    </div>
+                                        {/* Score */}
+                                        <div className="flex items-center justify-end font-mono text-xs sm:text-sm font-bold text-[#00E6FF]">
+                                            {entry.score.toLocaleString()}
+                                        </div>
 
-                                    {/* Time */}
-                                    <div className="flex items-center justify-end font-mono text-[10px] sm:text-xs text-white/60">
-                                        {entry.timeCompleted}
-                                    </div>
-                                </motion.div>
-                            ))}
+                                        {/* Time */}
+                                        <div className="flex items-center justify-end font-mono text-[10px] sm:text-xs text-white/60">
+                                            {entry.timeCompleted}
+                                        </div>
+                                    </motion.div>
+                                ))
+                            )}
                         </div>
 
                         {/* Footer Note */}
