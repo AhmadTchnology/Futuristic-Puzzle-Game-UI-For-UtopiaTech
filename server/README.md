@@ -10,8 +10,9 @@ This directory contains the backend server for the Futuristic Puzzle Game UI.
 ## Setup
 
 1.  **Install Dependencies**:
-    Navigate to the root directory and install dependencies if you haven't already:
+    Navigate to this `server` directory and install dependencies:
     ```bash
+    cd server
     npm install
     ```
 
@@ -51,10 +52,10 @@ This directory contains the backend server for the Futuristic Puzzle Game UI.
 
 ## Running the Server Locally
 
-To start the server, run the following command from the root directory:
+To start the server, run the following command from the `server` directory:
 
 ```bash
-npm run server
+npm start
 ```
 
 The server will start on `http://localhost:3001`.
@@ -64,7 +65,7 @@ The server will start on `http://localhost:3001`.
 This project is configured for deployment with **Coolify**.
 
 1.  **Push to Git**:
-    Ensure your project (including the `server` directory and `server/Dockerfile`) is pushed to your Git repository.
+    Ensure your project (including the `server` directory, `server/package.json`, and `server/Dockerfile`) is pushed to your Git repository.
 
 2.  **Create Resource in Coolify**:
     -   Go to your Coolify dashboard.
@@ -73,7 +74,7 @@ This project is configured for deployment with **Coolify**.
 
 3.  **Configuration**:
     -   **Build Pack**: Select **Docker** (it should automatically detect the `server/Dockerfile`).
-    -   **Base Directory**: Set to `/server` (since the Dockerfile is in the server subdirectory).
+    -   **Base Directory**: Set to `/server`.
     -   **Ports Exposes**: Set to `3001`.
     -   **Domains**: Set your custom domain (e.g., `https://api.yourdomain.com`). Coolify will handle the Traefik proxy and SSL automatically.
 
