@@ -14,32 +14,49 @@ interface LeaderboardProps {
     onBack: () => void;
 }
 
+import { API_URL } from '../../config';
+
 // Mock data removed in favor of API fetch
-const API_URL = import.meta.env.VITE_API_URL;
+
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
     const [leaderboardData, setLeaderboardData] = React.useState<LeaderboardEntry[]>([]);
     const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
+
+    const fetchLeaderboard = async () => {
+        if (!API_URL) {
+            setError('Configuration Error: API URL not set');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await fetch(API_URL);
+            if (response.ok) {
+                const data = await response.json();
+                setLeaderboardData(data);
+            } else {
+                console.error('Failed to fetch leaderboard data');
+                setError('Failed to fetch leaderboard data');
+            }
+        } catch (error) {
+            console.error('Error fetching leaderboard:', error);
+            setError('Connection Error: Failed to reach server');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     React.useEffect(() => {
-        const fetchLeaderboard = async () => {
-            try {
-                const response = await fetch(API_URL);
-                if (response.ok) {
-                    const data = await response.json();
-                    setLeaderboardData(data);
-                } else {
-                    console.error('Failed to fetch leaderboard data');
-                }
-            } catch (error) {
-                console.error('Error fetching leaderboard:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchLeaderboard();
     }, []);
+
+    const handleRetry = () => {
+        fetchLeaderboard();
+    };
 
     const getRankIcon = (rank: number) => {
         switch (rank) {
@@ -123,6 +140,19 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                             {loading ? (
                                 <div className="flex h-full items-center justify-center text-[#00E6FF] font-mono animate-pulse">
                                     LOADING_DATABASE...
+                                </div>
+                            ) : error ? (
+                                <div className="flex h-full flex-col items-center justify-center text-red-500 font-mono gap-4">
+                                    <div className="text-center">
+                                        <p className="font-bold mb-2">CONNECTION_FAILURE</p>
+                                        <p className="text-xs opacity-70">{error}</p>
+                                    </div>
+                                    <button
+                                        onClick={handleRetry}
+                                        className="px-4 py-2 bg-red-500/10 border border-red-500/50 rounded hover:bg-red-500/20 transition-colors text-xs tracking-widest"
+                                    >
+                                        RETRY_CONNECTION
+                                    </button>
                                 </div>
                             ) : (
                                 leaderboardData.map((entry, index) => (

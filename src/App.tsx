@@ -18,9 +18,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { useClickSound } from './hooks/useClickSound';
 
+
 import { NameEntry } from './components/game/NameEntry';
 import { PasswordEntry } from './components/game/PasswordEntry';
 import { Leaderboard } from './components/game/Leaderboard';
+import { API_URL } from './config';
 
 type GameState = 'INTRO' | 'NAME_INPUT' | 'PASSWORD_INPUT' | 'HUB' | 'PUZZLE' | 'VIEWER' | 'LEADERBOARD';
 
@@ -176,20 +178,20 @@ export default function App() {
         const seconds = durationSeconds % 60;
         const timeString = `${minutes}m ${seconds}s`;
 
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/leaderboard';
-
-        fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            operatorName: userName,
-            score: 0, // Default value as score is removed from logic
-            timeCompleted: timeString,
-            durationSeconds: durationSeconds,
-          }),
-        }).catch(err => console.error('Failed to submit score:', err));
+        if (API_URL) {
+          fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              operatorName: userName,
+              score: 0, // Default value as score is removed from logic
+              timeCompleted: timeString,
+              durationSeconds: durationSeconds,
+            }),
+          }).catch(err => console.error('Failed to submit score:', err));
+        }
       }
 
       // Return to HUB immediately instead of showing viewer
