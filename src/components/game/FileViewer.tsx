@@ -64,7 +64,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({ type, onClose }) => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="relative flex h-[80vh] w-full max-w-5xl overflow-hidden rounded-xl border border-[#00E6FF] bg-[#0A0A0F] shadow-[0_0_100px_rgba(0,230,255,0.1)] flex-col md:flex-row"
+        className="relative flex h-[90vh] md:h-[80vh] w-full max-w-5xl overflow-hidden rounded-xl border border-[#00E6FF] bg-[#0A0A0F] shadow-[0_0_100px_rgba(0,230,255,0.1)] flex-col md:flex-row"
       >
         {/* Sidebar / Folder Tree */}
         <div className="w-full md:w-64 border-b md:border-r border-[#00E6FF]/30 bg-[#00E6FF]/5 p-4 flex flex-col gap-2">
@@ -139,9 +139,8 @@ export const FileViewer: React.FC<FileViewerProps> = ({ type, onClose }) => {
             )}
           </div>
 
-          {/* Preview Pane (Bottom) */}
           {selectedFile && (
-            <div className="border-t border-white/10 bg-[#0A0A0F] p-6 h-48 overflow-y-auto">
+            <div className="border-t border-white/10 bg-[#0A0A0F] p-4 sm:p-6 h-32 sm:h-48 overflow-y-auto">
               <h3 className="mb-2 font-bold text-[#00E6FF] text-sm flex items-center gap-2">
                 {selectedFile.type === 'img' ? <ImageIcon size={14} /> : <FileText size={14} />}
                 {selectedFile.name}

@@ -6,7 +6,7 @@ import { cn } from '../../lib/utils';
 interface LeaderboardEntry {
     rank: number;
     operatorName: string;
-    score: number;
+    // Score removed
     timeCompleted: string;
 }
 
@@ -132,7 +132,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: index * 0.05 }}
                                         className={cn(
-                                            "grid grid-cols-[60px_1fr_100px_100px] sm:grid-cols-[80px_1fr_120px_120px] gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 border-b border-white/5 transition-all duration-300",
+                                            "grid grid-cols-[60px_1fr_100px] sm:grid-cols-[80px_1fr_120px] gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 border-b border-white/5 transition-all duration-300",
                                             entry.rank <= 3 ? "bg-white/5 hover:bg-white/10" : "hover:bg-white/5",
                                             entry.rank === 1 && "shadow-[0_0_30px_rgba(234,179,8,0.1)]"
                                         )}
@@ -148,13 +148,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                                             {entry.operatorName}
                                         </div>
 
-                                        {/* Score */}
-                                        <div className="flex items-center justify-end font-mono text-xs sm:text-sm font-bold text-[#00E6FF]">
-                                            {entry.score.toLocaleString()}
-                                        </div>
-
                                         {/* Time */}
-                                        <div className="flex items-center justify-end font-mono text-[10px] sm:text-xs text-white/60">
+                                        <div className="flex items-center justify-end font-mono text-xs sm:text-sm font-bold text-[#00E6FF]">
                                             {entry.timeCompleted}
                                         </div>
                                     </motion.div>
@@ -167,7 +162,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4 sm:mt-6">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6">
                         <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl p-3 sm:p-4">
                             <div className="font-mono text-[10px] tracking-widest text-white/50 mb-1">TOTAL OPERATIVES</div>
                             <div className="text-xl sm:text-2xl font-bold text-[#00E6FF]">20</div>
@@ -176,13 +171,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                             <div className="font-mono text-[10px] tracking-widest text-white/50 mb-1">FASTEST BREACH</div>
                             <div className="text-xl sm:text-2xl font-bold text-yellow-500">45s</div>
                         </div>
-                        <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl p-3 sm:p-4">
-                            <div className="font-mono text-[10px] tracking-widest text-white/50 mb-1">HIGHEST SCORE</div>
-                            <div className="text-xl sm:text-2xl font-bold text-[#00E6FF]">9,850</div>
-                        </div>
                     </div>
                 </motion.div>
             </div>
         </div>
     );
 };
+

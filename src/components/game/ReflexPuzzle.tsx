@@ -66,7 +66,7 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
                // Actually, let's remove missed packets from array
             }
 
-            return nextPackets.filter(p => p.y < 500 && !p.caught);
+            return nextPackets.filter(p => p.y < 600 && !p.caught);
          });
 
          gameLoopRef.current = requestAnimationFrame(loop);
@@ -114,7 +114,7 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
             <div className="text-red-500">INTEGRITY: {'♥'.repeat(lives)}</div>
          </div>
 
-         <div className="relative h-[400px] w-full overflow-hidden rounded-xl border border-white/10 bg-black/50">
+         <div className="relative h-[60vh] max-h-[400px] min-h-[300px] w-full overflow-hidden rounded-xl border border-white/10 bg-black/50">
             {/* Lanes */}
             <div className="absolute inset-0 flex">
                {[0, 1, 2].map(i => (

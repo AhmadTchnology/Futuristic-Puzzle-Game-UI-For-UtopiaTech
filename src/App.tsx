@@ -170,9 +170,7 @@ export default function App() {
         // Calculate score and submit to leaderboard
         const durationMs = now - startTime;
         const durationSeconds = Math.floor(durationMs / 1000);
-        // New score formula: Higher score for lower time. Base 100,000 minus (seconds * 50).
-        // This creates a steeper penalty for time.
-        const calculatedScore = Math.max(0, 100000 - (durationSeconds * 50));
+        // Score logic removed, sending 0 as default
 
         const minutes = Math.floor(durationSeconds / 60);
         const seconds = durationSeconds % 60;
@@ -187,7 +185,7 @@ export default function App() {
           },
           body: JSON.stringify({
             operatorName: userName,
-            score: calculatedScore,
+            score: 0, // Default value as score is removed from logic
             timeCompleted: timeString,
             durationSeconds: durationSeconds,
           }),
