@@ -18,11 +18,30 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
    const [score, setScore] = useState(0);
    const [lives, setLives] = useState(3);
    const [gameOver, setGameOver] = useState(false);
+   const [containerHeight, setContainerHeight] = useState(400); // Default, will update
    const gameLoopRef = useRef<number | null>(null);
    const lastSpawnRef = useRef<number>(0);
+   const containerRef = useRef<HTMLDivElement>(null);
 
    const TARGET_SCORE = 10;
    const SPEED = 3; // Pixels per frame
+
+   // Measure container height
+   useEffect(() => {
+      if (!containerRef.current) return;
+
+      const updateHeight = () => {
+         if (containerRef.current) {
+            setContainerHeight(containerRef.current.clientHeight);
+         }
+      };
+
+      updateHeight();
+      const observer = new ResizeObserver(updateHeight);
+      observer.observe(containerRef.current);
+
+      return () => observer.disconnect();
+   }, []);
 
    // Game Loop
    useEffect(() => {
@@ -58,15 +77,7 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
          // Update Packets
          setPackets(prev => {
             const nextPackets = prev.map(p => ({ ...p, y: p.y + SPEED }));
-
-            // Check Missed Data Packets (passed bottom)
-            const missedData = nextPackets.some(p => p.y > 400 && p.type === 'DATA' && !p.caught);
-            if (missedData) {
-               // We can penalize for missing data if we want, but let's keep it simple: only viruses hurt or clicking wrong.
-               // Actually, let's remove missed packets from array
-            }
-
-            return nextPackets.filter(p => p.y < 600 && !p.caught);
+            return nextPackets.filter(p => p.y < containerHeight + 100 && !p.caught);
          });
 
          gameLoopRef.current = requestAnimationFrame(loop);
@@ -74,21 +85,32 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
 
       gameLoopRef.current = requestAnimationFrame(loop);
       return () => cancelAnimationFrame(gameLoopRef.current!);
-   }, [score, lives, gameOver, onComplete]);
+   }, [score, lives, gameOver, onComplete, containerHeight]);
 
    const handleLaneClick = (laneIndex: number) => {
       if (gameOver) return;
 
-      // Check if there is a clickable packet in this lane near the "Catch Zone" (e.g., y > 300)
+      // Visual hit zone is strictly defined by CSS: bottom-10 (40px) to bottom-10+h-20 (120px)
+      // So hit zone is [height - 120, height - 40]
+      // We add some buffer for playability -> [height - 130, height - 30]
+      const hitZoneTop = containerHeight - 130;
+      const hitZoneBottom = containerHeight - 30;
+
       setPackets(prev => {
-         const targetIndex = prev.findIndex(p => p.lane === laneIndex && p.y > 250 && p.y < 450 && !p.caught);
+         // Find the FIRST clickable packet in the zone
+         const targetIndex = prev.findIndex(p =>
+            p.lane === laneIndex &&
+            p.y > hitZoneTop &&
+            p.y < hitZoneBottom &&
+            !p.caught
+         );
 
          if (targetIndex !== -1) {
             const target = prev[targetIndex];
 
             if (target.type === 'VIRUS') {
                setLives(l => l - 1);
-               // Trigger mini taunt
+               // Mark as caught so it doesn't hit again
                return prev.map((p, i) => i === targetIndex ? { ...p, caught: true } : p);
             } else {
                setScore(s => s + 1);
@@ -104,7 +126,6 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
       setLives(3);
       setPackets([]);
       setGameOver(false);
-      setGameOver(false);
    };
 
    return (
@@ -112,9 +133,14 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
          <div className="flex justify-between w-full font-mono text-xs sm:text-sm text-[#00E6FF] px-2">
             <div>DATA_CAPTURED: {score}/{TARGET_SCORE}</div>
             <div className="text-red-500">INTEGRITY: {'♥'.repeat(lives)}</div>
+            <div className="absolute top-0 right-0 text-[10px] text-white/50">Details: {packets.length} | H: {containerHeight}</div>
          </div>
 
-         <div className="relative h-[60vh] max-h-[400px] min-h-[300px] w-full overflow-hidden rounded-xl border border-white/10 bg-black/50">
+         <div
+            ref={containerRef}
+            className="relative w-full overflow-hidden rounded-xl border border-white/30 bg-white/5"
+            style={{ height: '400px' }}
+         >
             {/* Lanes */}
             <div className="absolute inset-0 flex">
                {[0, 1, 2].map(i => (
