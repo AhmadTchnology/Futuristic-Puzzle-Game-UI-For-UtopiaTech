@@ -32,7 +32,10 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
 
       const updateHeight = () => {
          if (containerRef.current) {
-            setContainerHeight(containerRef.current.clientHeight);
+            // Defensive: ensure we don't accidentally set 0 or very small height if layout hasn't stabilized
+            // which can happen in some prod builds / hydration states.
+            const h = containerRef.current.clientHeight;
+            setContainerHeight(h > 100 ? h : 400);
          }
       };
 
@@ -133,13 +136,12 @@ export const ReflexPuzzle: React.FC<ReflexPuzzleProps> = ({ onComplete }) => {
          <div className="flex justify-between w-full font-mono text-xs sm:text-sm text-[#00E6FF] px-2">
             <div>DATA_CAPTURED: {score}/{TARGET_SCORE}</div>
             <div className="text-red-500">INTEGRITY: {'♥'.repeat(lives)}</div>
-            <div className="absolute top-0 right-0 text-[10px] text-white/50">Details: {packets.length} | H: {containerHeight}</div>
          </div>
 
          <div
             ref={containerRef}
-            className="relative w-full overflow-hidden rounded-xl border border-white/30 bg-white/5"
-            style={{ height: '400px' }}
+            className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-black/50"
+            style={{ minHeight: '400px', height: '60vh', maxHeight: '400px' }}
          >
             {/* Lanes */}
             <div className="absolute inset-0 flex">
