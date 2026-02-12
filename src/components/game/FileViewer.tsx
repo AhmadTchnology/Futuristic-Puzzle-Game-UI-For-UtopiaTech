@@ -12,33 +12,21 @@ interface FileViewerProps {
 // Mock Data Structure simulating a file system
 const FILE_SYSTEM = {
   'TEAM': {
-    name: 'PERSONNEL',
+    name: 'team',
     files: [
-      { id: 't1', name: 'Alex_V_Profile.enc', type: 'img', content: 'Lead Architect: Alex V. // Clearance: L5' },
-      { id: 't2', name: 'Sarah_K_Profile.enc', type: 'img', content: 'Neural Eng: Sarah K. // Clearance: L4' },
-      { id: 't3', name: 'Payroll_Data.csv', type: 'doc', content: 'Encrypted financial records...' },
-    ]
-  },
-  'PROJECTS': {
-    name: 'BLUEPRINTS',
-    files: [
-      { id: 'p1', name: 'Chimera_Schematic.pdf', type: 'img', content: 'Project Chimera: Neural Link Interface V1' },
-      { id: 'p2', name: 'Titan_Protocol.log', type: 'doc', content: 'Titan Protocol Status: ON HOLD. Reason: Safety violation.' },
-      { id: 'p3', name: 'Icarus_Failure_Report.txt', type: 'doc', content: 'Test #492: Signal propagation failed at 40,000ft.' },
+      { id: 't1', name: 'team.txt', type: 'txt', content: 'uTech Team: /Ahmed Hussein -Ui/Ux Design /Ahmed Shukur -Backend Developer /Mustafa Samir -Frontend Developer /Ahmed Ramzy -Video Editor' },
     ]
   },
   'SOCIALS': {
-    name: 'COMMS_LOGS',
+    name: 'social media',
     files: [
-      { id: 's1', name: 'Twitter_Dump.json', type: 'doc', content: '@utech_official: "The future is now." [10k RTs]' },
-      { id: 's2', name: 'LinkedIn_Connections.csv', type: 'doc', content: '500+ Connections. Network strength: High.' },
+      { id: 's1', name: 'instagram.txt', type: 'txt', content: 'Instagram: @u.topiatech' },
     ]
   },
   'VISION': {
-    name: 'MANIFESTO',
+    name: 'who are we',
     files: [
-      { id: 'v1', name: 'Keynote_Speech_2024.txt', type: 'doc', content: '"We do not grow the future; we construct it."' },
-      { id: 'v2', name: 'Mission_Statement.doc', type: 'doc', content: 'To blur the line between biological and digital existence.' },
+      { id: 'v1', name: 'about_us.txt', type: 'txt', content: 'UTech (Utopia Tech) Baghdad’s Next-Gen Dev Collective. We turn messy sketches into deployed systems. Specializing in Web, Apps, and Logic-based Games. We don’t wait for the future. We build it.' },
     ]
   }
 };
