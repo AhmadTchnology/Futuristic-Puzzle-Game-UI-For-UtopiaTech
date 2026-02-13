@@ -4,10 +4,29 @@ const db = require('./db');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
+
+// Get leaderboard stats
+app.get('/api/leaderboard/stats', async (req, res) => {
+    try {
+        const totalResult = await db.query('SELECT COUNT(*) FROM leaderboard');
+        const fastestResult = await db.query('SELECT time_completed FROM leaderboard ORDER BY duration_seconds ASC LIMIT 1');
+
+        const totalOperatives = parseInt(totalResult.rows[0].count, 10);
+        const fastestBreach = fastestResult.rows.length > 0 ? fastestResult.rows[0].time_completed : 'N/A';
+
+        res.json({
+            totalOperatives,
+            fastestBreach
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // Get leaderboard
 app.get('/api/leaderboard', async (req, res) => {

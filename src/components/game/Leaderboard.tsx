@@ -24,6 +24,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
 
+    const [stats, setStats] = React.useState({ totalOperatives: 0, fastestBreach: 'N/A' });
+
     const fetchLeaderboard = async () => {
         if (!API_URL) {
             setError('Configuration Error: API URL not set');
@@ -34,10 +36,18 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch(API_URL);
-            if (response.ok) {
-                const data = await response.json();
+
+            // Fetch leaderboard and stats in parallel
+            const [leaderboardRes, statsRes] = await Promise.all([
+                fetch(API_URL),
+                fetch(`${API_URL}/stats`)
+            ]);
+
+            if (leaderboardRes.ok && statsRes.ok) {
+                const data = await leaderboardRes.json();
+                const statsData = await statsRes.json();
                 setLeaderboardData(data);
+                setStats(statsData);
             } else {
                 console.error('Failed to fetch leaderboard data');
                 setError('Failed to fetch leaderboard data');
@@ -195,11 +205,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack }) => {
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6">
                         <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl p-3 sm:p-4">
                             <div className="font-mono text-[10px] tracking-widest text-white/50 mb-1">TOTAL OPERATIVES</div>
-                            <div className="text-xl sm:text-2xl font-bold text-[#00E6FF]">20</div>
+                            <div className="text-xl sm:text-2xl font-bold text-[#00E6FF]">{loading ? "-" : stats.totalOperatives}</div>
                         </div>
                         <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl p-3 sm:p-4">
                             <div className="font-mono text-[10px] tracking-widest text-white/50 mb-1">FASTEST BREACH</div>
-                            <div className="text-xl sm:text-2xl font-bold text-yellow-500">45s</div>
+                            <div className="text-xl sm:text-2xl font-bold text-yellow-500">{loading ? "-" : stats.fastestBreach}</div>
                         </div>
                     </div>
                 </motion.div>
